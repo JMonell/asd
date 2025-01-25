@@ -1,0 +1,87 @@
+@inject HttpClient Http
+@inject ApiService apiService
+@inject NumberService numberService
+
+<h3>numbersearchcomponent</h3>
+
+<div>
+    <input @bind="number" placeholder="Enter phone number">
+    <button @onclick="ValidateNum">Check number</button>
+</div>
+
+@if(numberModel == null && string.IsNullOrEmpty(errMessage)){
+    <p>No data, enter a number and press button</p>
+ }else if(numberModel != null){
+    <div>
+        <p>Number: (@numberModel.Country_Prefix) @numberModel.Local_Format</p>
+        <p>Carrier: @numberModel.Carrier</p>
+        <p>Line type: @numberModel.Line_Type</p>
+        <p>Country: @numberModel.Country_Name</p> 
+
+        <button @onclick= " () => AddFavorites(numberModel, true)">Save this number</button>
+    </div>
+}
+@* numberService *@
+@if (ToggleSaved){
+    <h4>Favorite Searches</h4>
+    @if (numberService.ListOfFavorites.Count == 0){
+        <p>No favorites yet.</p>
+    }else{
+        @foreach (var num in numberService.ListOfFavorites){
+            <div class="Card">
+                <div class="card-Body">
+                    <p>Number: (@num._NumberModel.Country_Prefix) @num._NumberModel.Local_Format</p>
+                    <p>Carrier: @num._NumberModel.Carrier</p>
+                    <p>Line Type: @num._NumberModel.Line_Type</p>
+                    <p>Country: @num._NumberModel.Country_Name</p>
+                </div>
+            </div>
+        }
+    }
+}
+
+
+@code{
+    public NumberModel? numberModel;
+    public string number = "";
+    public string? errMessage;
+    public FavoriteNumberModel? favoriteNumberModel; 
+
+    public bool ToggleSaved = true;
+
+    public void AddFavorites(NumberModel number, bool isFavorite){
+        if(numberModel != null){
+            FavoriteNumberModel newFavorite = new FavoriteNumberModel{
+            _NumberModel = number,
+            _IsFavorite = isFavorite
+            };
+
+            numberService.AddFavoriteNumber(newFavorite);
+        }else{
+            Console.WriteLine("No Valid Number available");
+        }        
+    }
+
+    public async Task ValidateNum(){
+        errMessage = null;
+        numberModel = null;
+
+        if (string.IsNullOrWhiteSpace(number)){
+            errMessage = "enter a number";
+            return;
+        }
+
+        string apiKey = apiService.GetApiKey()?.Trim();
+        Console.WriteLine($"Retrieved API Key: {apiKey}");
+        string url = $"https://apilayer.net/api/validate?access_key={apiKey}&number={number}&country_code=&format=1";
+
+        try{
+            numberModel = await Http.GetFromJsonAsync<NumberModel>(url);
+        }catch (HttpRequestException){
+            errMessage = "Unable to connect to the server. Please check your network.";
+        }
+        catch (Exception){
+            errMessage = "Something went wrong. Please try again.";
+        }
+    }
+}
