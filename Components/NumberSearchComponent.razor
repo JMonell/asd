@@ -6,19 +6,23 @@
 
 <div>
     <input @bind="number" placeholder="Enter phone number">
-    <button @onclick="ValidateNum">Check number</button>
+    <button class="btn btn-success" @onclick="ValidateNum">Check number</button>
 </div>
 
 @if(numberModel == null && string.IsNullOrEmpty(errMessage)){
     <p>No data, enter a number and press button</p>
  }else if(numberModel != null){
-    <div>
+    <div class="card">
+        <div class="card-content">
         <p>Number: (@numberModel.Country_Prefix) @numberModel.Local_Format</p>
         <p>Carrier: @numberModel.Carrier</p>
         <p>Line type: @numberModel.Line_Type</p>
         <p>Country: @numberModel.Country_Name</p> 
 
-        <button @onclick= " () => AddFavorites(numberModel, true)">Save this number</button>
+        <button class="btn btn-success" @onclick= " () => AddFavorites(numberModel, true)">Save this number</button>
+
+        </div>
+        <div class="corner-accent"></div>
     </div>
 }
 @* numberService *@
@@ -28,12 +32,18 @@
         <p>No favorites yet.</p>
     }else{
         @foreach (var num in numberService.ListOfFavorites){
-            <div class="Card">
-                <div class="card-Body">
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-text">
                     <p>Number: (@num._NumberModel.Country_Prefix) @num._NumberModel.Local_Format</p>
                     <p>Carrier: @num._NumberModel.Carrier</p>
                     <p>Line Type: @num._NumberModel.Line_Type</p>
                     <p>Country: @num._NumberModel.Country_Name</p>
+
+                    <button class="btn btn-success" @onclick= " () => RemoveFavorites(numberModel)">Remove this number</button>
+
+                    </div>
+                    <div class="corner-accent"></div>
                 </div>
             </div>
         }
@@ -61,6 +71,22 @@
             Console.WriteLine("No Valid Number available");
         }        
     }
+
+    public void RemoveFavorites(NumberModel number){
+    if (number != null){
+        // Create a temporary FavoriteNumberModel to locate the item to remove
+        var favoriteToRemove = new FavoriteNumberModel{
+            _NumberModel = number
+        };
+
+        numberService.RemoveFavoriteNumber(favoriteToRemove); // Call the service to remove the favorite
+        StateHasChanged();
+    }else{
+        Console.WriteLine("No Valid Number available");
+    }
+}
+
+
 
     public async Task ValidateNum(){
         errMessage = null;

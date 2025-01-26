@@ -15,6 +15,6 @@ public class NumberService{
     public List<FavoriteNumberModel> RemoveFavoriteNumber(FavoriteNumberModel number){
 
      listOfFavorites.Remove(number); 
-     return listOfFavorites; 
+     return listOfFavorites;
     }
 }

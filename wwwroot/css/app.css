@@ -1,5 +1,6 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #4B6F44;
 }
 
 h1:focus {
@@ -97,6 +98,43 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+.card {
+    margin: 1rem;
+        position: relative;
+        background-color: #3e3e3e; /* Black background for the card */
+        color: #fff; /* White text */
+        width: 300px;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        z-index: 1;
+}
+    
+    .card .card-content h2 {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.5;
+    }
+    
+        .corner-accent {
+            height: 128px;
+            width: 128px;
+            background-color: #4FFFB0;
+
+            z-index: 1;
+            position: absolute;
+            top: -75px;
+            right: -75px;
+
+            border-radius: 50%;
+        }
+    
+    .card-btn{
+        
+    }
+
 
 code {
     color: #c02d76;
