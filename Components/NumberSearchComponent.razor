@@ -40,7 +40,7 @@
                     <p>Line Type: @num._NumberModel.Line_Type</p>
                     <p>Country: @num._NumberModel.Country_Name</p>
 
-                    <button class="btn btn-success" @onclick= " () => RemoveFavorites(numberModel)">Remove this number</button>
+                    <button class="btn btn-success" @onclick= " () => RemoveFavorites(num)">Remove this number</button>
 
                     </div>
                     <div class="corner-accent"></div>
@@ -72,18 +72,13 @@
         }        
     }
 
-    public void RemoveFavorites(NumberModel number){
+    public void RemoveFavorites(FavoriteNumberModel number){
     if (number != null){
-        // Create a temporary FavoriteNumberModel to locate the item to remove
-        var favoriteToRemove = new FavoriteNumberModel{
-            _NumberModel = number
-        };
-
-        numberService.RemoveFavoriteNumber(favoriteToRemove); // Call the service to remove the favorite
-        StateHasChanged();
-    }else{
-        Console.WriteLine("No Valid Number available");
-    }
+        numberService.RemoveFavoriteNumber(number); // Remove the specific favorite
+            StateHasChanged();
+        }else{
+            Console.WriteLine("No valid favorite provided to remove");
+        }
 }
 
 
